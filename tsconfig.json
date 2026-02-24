@@ -25,6 +25,12 @@
   "references": [
     {
       "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./projects/company-frontend/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/company-frontend/tsconfig.spec.json"
     }
   ]
 }

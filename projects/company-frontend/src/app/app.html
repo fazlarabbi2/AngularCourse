@@ -1,0 +1,150 @@
+<div style="display: flex">
+  <!-- Sidebar -->
+  <aside style="width: 250px" class="sidebar">
+    <div class="sidebar-title">TechCorp Inc.</div>
+
+    <button class="nav-button" (click)="fetchEmployees()">
+      👥 Fetch Employees
+      <br /><small style="font-weight: normal; color: #94a3b8; font-size: 0.75rem"
+        >(Demonstrates Cache & Logging)</small
+      >
+    </button>
+
+    <button class="nav-button" (click)="accessSecretData()">
+      🔒 Access Secret Data
+      <br /><small style="font-weight: normal; color: #94a3b8; font-size: 0.75rem"
+        >(Demonstrates Auth & Error)</small
+      >
+    </button>
+
+    <button class="nav-button" (click)="triggerServerError(404)">
+      ❌ Trigger 404 Error
+      <br /><small style="font-weight: normal; color: #94a3b8; font-size: 0.75rem"
+        >(Demonstrates Error Interceptor)</small
+      >
+    </button>
+
+    <button class="nav-button" (click)="triggerServerError(500)">🔥 Trigger 500 Error</button>
+  </aside>
+
+  <!-- Main Content -->
+  <main style="flex: 1" class="main-content">
+    <!-- Auth Toggle -->
+    <div class="toggle-container">
+      <h3 style="margin: 0">Simulation Controls:</h3>
+      <label
+        style="
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
+          font-weight: bold;
+          margin-left: 20px;
+        "
+      >
+        <input
+          type="checkbox"
+          [checked]="useAuthToken"
+          (change)="toggleAuth()"
+          style="width: 18px; height: 18px"
+        />
+        Attach Mock JWT Token
+      </label>
+    </div>
+
+    <div style="display: flex; gap: 2rem">
+      <!-- Left Column: Data View -->
+      <div style="flex: 1">
+        <div class="card">
+          <div class="card-title">Dashboard View</div>
+
+          <div *ngIf="isLoading" style="text-align: center; padding: 2rem; color: #64748b">
+            Loading data... <br />
+            <small
+              >If this is the first employee fetch, it might take 2 seconds to simulate a slow DB
+              lookup.</small
+            >
+          </div>
+
+          <div *ngIf="!isLoading && employees.length > 0">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let emp of employees">
+                  <td>#{{ emp.id }}</td>
+                  <td style="font-weight: 500">{{ emp.name }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="'badge-' + emp.department.toLowerCase()">
+                      {{ emp.department }}
+                    </span>
+                  </td>
+                  <td>{{ emp.role }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div
+            *ngIf="!isLoading && employees.length === 0 && !statusMessage"
+            style="text-align: center; padding: 2rem; color: #94a3b8"
+          >
+            Select an action from the sidebar to begin.
+          </div>
+
+          <div
+            *ngIf="statusMessage"
+            class="status-indicator"
+            [ngClass]="isError ? 'status-error' : 'status-success'"
+          >
+            {{ statusMessage }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interceptor Logs -->
+      <div style="flex: 1">
+        <div class="card" style="position: sticky; top: 2rem">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              border-bottom: 2px solid #e2e8f0;
+              padding-bottom: 0.5rem;
+              margin-bottom: 1rem;
+            "
+          >
+            <div style="font-size: 1.25rem; font-weight: 600; color: #0f172a">
+              Interceptor Event Log
+            </div>
+            <button
+              class="btn btn-outline"
+              style="padding: 4px 8px; font-size: 0.8rem"
+              (click)="clearLogs()"
+            >
+              Clear
+            </button>
+          </div>
+
+          <div class="console">
+            <div *ngIf="logs.length === 0" style="color: #64748b; font-style: italic">
+              Waiting for network activity...
+            </div>
+            <div *ngFor="let log of logs" class="log-entry">
+              <span class="log-time">{{ log.time | date: 'HH:mm:ss.SSS' }}</span>
+              <span class="log-source">[{{ log.source }}]</span>
+              <span [ngClass]="'log-msg-' + log.type">{{ log.message }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
