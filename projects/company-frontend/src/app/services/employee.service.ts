@@ -13,7 +13,7 @@ export interface Employee {
   providedIn: 'root'
 })
 export class EmployeeService {
-  private apiUrl = 'https://localhost:7196/api'; // Standard .NET HTTPS port, may need adjustment
+  private apiUrl = 'http://localhost:5033/api'; // Standard .NET HTTPS port, may need adjustment
   private http = inject(HttpClient);
 
   public useAuthToken = false;
